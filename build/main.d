@@ -1,4 +1,5 @@
-main.o: /Users/silasbergen/Documents/Developement/3DS/nms/source/main.cpp \
+main.o: \
+ /Users/silasbergen/Documents/Developement/3DS/NMS-Dialog/source/main.cpp \
  /opt/devkitpro/libctru/include/3ds.h \
  /opt/devkitpro/libctru/include/3ds/types.h \
  /opt/devkitpro/libctru/include/3ds/result.h \

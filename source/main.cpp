@@ -94,17 +94,19 @@ int main(int argc, char* argv[])
 // Function defenitions
 void switchScreen(int screen) {
     if (screen == 1) {
-        consoleSelect(&topScreen);
+        consoleSelect(&topScreen); // Select the top console
     }
     else if (screen == 2) {
-        consoleSelect(&bottomScreen);
+        consoleSelect(&bottomScreen); // Select the bottom consolle
     }
 }
+
 void para(int count) {
     for (int i = 0; i < count; i++) 
         std::cout << std::endl;
-    std::cout << " ";
+    std::cout << " "; // Type a space to have a border at the edge of the screen
 }
+
 void wait(int timeToWait) {
     std::this_thread::sleep_for(std::chrono::milliseconds(timeToWait));
 }
@@ -127,7 +129,7 @@ void color(std::string colorName) {
 }
 void showChoice(std::string option1, std::string option2) {
     switchScreen(2); // Switch to bottom screen
-    para(5);
+    para(15);
     show("(A) ", 1, false);
     show(option1, 1, true);
     para(1);

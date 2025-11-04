@@ -29,6 +29,8 @@ void wait(int timeToWait);
 void show(std::string text, double time, bool doEndl, std::string color);
 void color(std::string color);
 void para(int count);
+void button(u32 button);
+void holdButton(u32 button, int duration);
 void showChoice(std::string option1, std::string option2);
 
 
@@ -43,20 +45,38 @@ int main(int argc, char* argv[])
     switchScreen(1); // Start on top screen
 
     // Main code
-    std::cout << std::endl;
-    // Add "Begin Initialization", where the player has to press Y to start the game
-    wait(3000); // Wait for a second
-    std::cout << " ";
-    show("ATLAS INITIALIZATION ... ", 1, false, RESET);
-    show("              COMPLETED", 1.5, true, ACC_COLOR);
+
+    // ---------- INITIALIZATION ----------
+    wait(2000);
+    para(12);
+    show("             BEGIN INTIALIZATION?               ", 2, true, RESET);
+    para(1);
+    switchScreen(2);
+    para(12);
+    show("        Hold (Y) to initialize", 1, false, RESET);
+    holdButton(KEY_Y, 2000);
+    consoleClear();
+    switchScreen(1);
+    consoleClear();
+    wait(2000); // Wait for 2 seconds
+
+    // ------------- AWAKENING ------------
+    para(1);
+    show("ATLAS SYSTEM INITIALIZATION ... ", 1, false, RESET);
+    show("       COMPLETED", 1.5, true, ACC_COLOR);
+    wait(1000); // Wait for 1 seconds
     show("LIFE SUPPORT SYSTEMS ... ", 1, false, RESET);
     show("              ACTIVATED", 1.5, true, ACC_COLOR);
+    wait(1000); // Wait for 1 seconds
     show("SHIELD KINETIC SYSTEM ... ", 1, false, RESET);
     show("                ONLINE", 1.5, true, ACC_COLOR);
+    wait(1000); // Wait for 1 seconds
     show("MULTITOOL AND MINING LASER ... ", 1, false, RESET);
     show("      OPERATIONAL", 1.5, true, ACC_COLOR);
+    wait(1000); // Wait for 1 seconds
     show("RADIATION PROTECTION ... ", 1, false, RESET);
     show("                FALLING", 1.5, true, ACC_COLOR);
+    wait(2000); // Wait for 2 seconds
     para(1);
     show("HELLO ", 1, false, RESET);
     show("TRAVELLER", 2.5, true, ACC_COLOR);
@@ -92,7 +112,6 @@ int main(int argc, char* argv[])
         if (keysHeld() & KEY_START) {
             break; // break in order to return to hbmenu
         }
-
     }
 
     gfxExit();
@@ -135,6 +154,43 @@ void show(std::string text, double time, bool doEndl, std::string color) {
 }
 void color(std::string colorName) {
     std::cout << colorName;
+}
+void button(u32 button) {
+    waitForPress = true;
+    while (waitForPress && aptMainLoop()) {
+        gspWaitForVBlank();
+        hidScanInput();
+        
+        u32 kDown = keysDown(); 
+        
+        if (kDown & button) {            
+            waitForPress = false;
+            choice = true;
+        }
+    }
+}
+void holdButton(u32 button, int duration) {
+    waitForPress = true;
+    while (waitForPress && aptMainLoop()) {
+        gspWaitForVBlank();
+        hidScanInput();
+        
+        u32 kDown = keysDown(); 
+        
+        if (kDown & button) {
+            wait(2000);
+            if (kDown & button) {
+                waitForPress = false;
+                choice = true;
+                consoleClear();
+                switchScreen(1);
+                consoleClear();
+            }
+            else {
+                holdButton(button, duration);
+            }
+        }
+    }
 }
 void showChoice(std::string option1, std::string option2) {
     switchScreen(2); // Switch to bottom screen

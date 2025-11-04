@@ -16,6 +16,8 @@ const std::string BLUE = "\x1b[34m";
 const std::string MAGENTA = "\x1b[35m";
 const std::string CYAN = "\x1b[36m";
 
+const std::string ACC_COLOR = RED;
+
 // Variables
 bool waitForPress = false;
 bool choice;
@@ -24,7 +26,7 @@ PrintConsole topScreen, bottomScreen;
 // Function identifiers
 void switchScreen(int screen);
 void wait(int timeToWait);
-void show(std::string text, double time, bool doEndl);
+void show(std::string text, double time, bool doEndl, std::string color);
 void color(std::string color);
 void para(int count);
 void showChoice(std::string option1, std::string option2);
@@ -42,36 +44,42 @@ int main(int argc, char* argv[])
 
     // Main code
     std::cout << std::endl;
-    wait(1000); // Wait for a second
+    // Add "Begin Initialization", where the player has to press Y to start the game
+    wait(3000); // Wait for a second
+    std::cout << " ";
+    show("ATLAS INITIALIZATION ... ", 1, false, RESET);
+    show("              COMPLETED", 1.5, true, ACC_COLOR);
+    show("LIFE SUPPORT SYSTEMS ... ", 1, false, RESET);
+    show("              ACTIVATED", 1.5, true, ACC_COLOR);
+    show("SHIELD KINETIC SYSTEM ... ", 1, false, RESET);
+    show("                ONLINE", 1.5, true, ACC_COLOR);
+    show("MULTITOOL AND MINING LASER ... ", 1, false, RESET);
+    show("      OPERATIONAL", 1.5, true, ACC_COLOR);
+    show("RADIATION PROTECTION ... ", 1, false, RESET);
+    show("                FALLING", 1.5, true, ACC_COLOR);
     para(1);
-    show("HELLO ", 1, false);
-    color(RED);
-    show("TRAVELLER", 2.5, true);
-    color(RESET);
-    show("ITERATION: ", 1, false);
-    color(RED);
-    show("7X3A", 0.3, false);
-    color(RESET);
-    show("9L2Q8Z1M4R5S6T", 0.3, false);
-    color(RED);
-    show("16", 0.6, true);
+    show("HELLO ", 1, false, RESET);
+    show("TRAVELLER", 2.5, true, ACC_COLOR);
+    show("ITERATION: ", 1, false, RESET);
+    show("7X3A", 1, false, ACC_COLOR);
+    show("9L2Q8Z1M4R5S6T", 0.3, false, RESET);
+    show("16", 0.6, true, ACC_COLOR);
     para(1);
-    color(RESET);
     wait(3000);
-    show("I woke up here, ", 1, false);
-    show("not knowing who I am. ", 1, true);
-    show("Where I am. ", 1, false);
-    show("What my purpose is.", 1, true);
+    show("I woke up here, ", 1, false, RESET);
+    show("not knowing who I am. ", 1, true, RESET);
+    show("Where I am. ", 1, false, RESET);
+    show("What my purpose is.", 1, true, RESET);
     para(1);
     wait(1000);
-    show("...", 5, true);
+    show("...", 5, true, RESET);
     para(1);
     wait(1000);
-    show("I should look around. ", 1, true);
-    show("Maybe I find something that could help me.", 1, true);
-    showChoice("Search the Forest", "Find a Way Out");
+    show("I should look around. ", 1, true, RESET);
+    show("Maybe I find something that could help me.", 1, true, RESET);
+    showChoice("Search the Forest", "Check Inventory for useful items"); // Choose between the two options
     switchScreen(1); // Switch back to top screen
-    std::cout << "lolllollool";
+    return 0;
 
     // Main loop
     while (aptMainLoop())
@@ -110,7 +118,8 @@ void para(int count) {
 void wait(int timeToWait) {
     std::this_thread::sleep_for(std::chrono::milliseconds(timeToWait));
 }
-void show(std::string text, double time, bool doEndl) {
+void show(std::string text, double time, bool doEndl, std::string color) {
+    std::cout << color;
     for (char character : text) {
         std::cout << character;
         if (!(character == ' ')) {
@@ -129,12 +138,12 @@ void color(std::string colorName) {
 }
 void showChoice(std::string option1, std::string option2) {
     switchScreen(2); // Switch to bottom screen
-    para(15);
-    show("(A) ", 1, false);
-    show(option1, 1, true);
+    para(14);
+    show("(A) ", 1, false, ACC_COLOR);
+    show(option1, 1, true, RESET);
     para(1);
-    show("(B) ", 1, false);
-    show(option2, 1, true);
+    show("(B) ", 1, false, ACC_COLOR);
+    show(option2, 1, true, RESET);
     waitForPress = true;
     while (waitForPress && aptMainLoop()) {
         gspWaitForVBlank();

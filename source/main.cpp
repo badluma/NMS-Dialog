@@ -21,8 +21,7 @@ const std::string ACC_COLOR = RED;
 // Variables
 bool waitForPress = false;
 int choice;
-PrintConsole topScreen, bottomScreen;
-
+PrintConsole topScreen, bottomScreen; // Screens to print on
 // Function identifiers
 void switchScreen(int screen);
 void wait(int timeToWait);
@@ -128,13 +127,11 @@ void switchScreen(int screen) {
         consoleSelect(&bottomScreen); // Select the bottom consolle
     }
 }
-
 void para(int count) {
     for (int i = 0; i < count; i++) 
         std::cout << std::endl;
     std::cout << " "; // Type a space to have a border at the edge of the screen
 }
-
 void wait(int timeToWait) {
     std::this_thread::sleep_for(std::chrono::milliseconds(timeToWait));
 }
@@ -147,8 +144,7 @@ void show(std::string text, double time, bool doEndl, std::string color) {
         }
     }
     if (doEndl) {
-        std::cout << std::endl;}
-    if (doEndl) {
+        std::cout << std::endl;
         std::cout << " ";
     }
     wait(250);

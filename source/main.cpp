@@ -20,7 +20,7 @@ const std::string ACC_COLOR = RED;
 
 // Variables
 bool waitForPress = false;
-bool choice;
+int choice;
 PrintConsole topScreen, bottomScreen;
 
 // Function identifiers
@@ -28,11 +28,12 @@ void switchScreen(int screen);
 void wait(int timeToWait);
 void show(std::string text, double time, bool doEndl, std::string color);
 void color(std::string color);
+void clear(int screen);
 void para(int count);
 void button(u32 button);
 void holdButton(u32 button, int duration);
 void showChoice(std::string option1, std::string option2);
-
+void describe(std::string text, double time, bool doEndl, std::string color);
 
 
 // Main Function
@@ -44,12 +45,10 @@ int main(int argc, char* argv[])
 
     switchScreen(1); // Start on top screen
 
-    // Main code
-
     // ---------- INITIALIZATION ----------
     wait(2000);
     para(12);
-    show("             BEGIN INTIALIZATION?               ", 2, true, RESET);
+    show("              BEGIN INTIALIZATION?               ", 2, true, RESET);
     para(1);
     switchScreen(2);
     para(12);
@@ -96,24 +95,26 @@ int main(int argc, char* argv[])
     para(1);
     wait(1000);
     show("I should look around. ", 1, true, RESET);
-    show("Maybe I find something that could help me.", 1, true, RESET);
-    showChoice("Search the Forest", "Check Inventory for useful items"); // Choose between the two options
-    switchScreen(1); // Switch back to top screen
-    return 0;
-
-    // Main loop
-    while (aptMainLoop())
-    {
-        gspWaitForVBlank();
-        gfxSwapBuffers();
-        hidScanInput();
-
-        // Your code goes here
-        if (keysHeld() & KEY_START) {
-            break; // break in order to return to hbmenu
-        }
+    show("I notice that my scanner is broken. I should", 1, true, RESET);
+    show("repair it to learn more about my environment. ", 1, true, RESET);
+    showChoice("Repair scanner", "Investigate the area"); // Choose between the two options
+    clear(0);
+    if (choice == 1) {
+    //    ------------------------------------------------
+        //    ------------------------------------------------
+        show("Alright, lets see what I need to repair this.", 1, true, RESET);
+        para(1);
+        show("SCANNER STATUS ...               ", 1, false, RESET);
+        show("NON-OPERATIONAL", 1, true, ACC_COLOR);
+        show("REQUIRED MATERIAL: ", 1, false, RESET);
+        show("SODIUM", 1, true, ACC_COLOR);
     }
-
+    else if (choice == 2) {
+        show("The scanner isn't too important right now.", 1, true, RESET);
+        show("For now, I want to find out where I am.", 1, true, RESET);
+        describe("I'm slowly heading towards the forest", 1, true, RESET);
+    }
+    wait(10000);
     gfxExit();
     return 0;
 }
@@ -155,17 +156,39 @@ void show(std::string text, double time, bool doEndl, std::string color) {
 void color(std::string colorName) {
     std::cout << colorName;
 }
+void clear(int screen) {
+    if (screen == 1) { // Clear top screen
+        switchScreen(1);
+        consoleClear();
+        std::cout << std::endl; // Add border on the top of the screen through an empty line
+        std::cout << " "; // Type space at end to have a border
+        
+    }
+    if (screen == 2) { // Clear bottom screen
+        switchScreen(2);
+        consoleClear();
+        std::cout << std::endl; // Add border on the top of the screen through an empty line
+        std::cout << " "; // Type space at end to have a border
+    }
+    if (screen == 0) { // Clear both screens
+        switchScreen(2);
+        consoleClear();
+        switchScreen(1);
+        consoleClear();
+        std::cout << std::endl; // Add border on the top of the screen through an empty line
+        std::cout << " "; // Type space at end to have a border
+    }
+}
 void button(u32 button) {
     waitForPress = true;
-    while (waitForPress && aptMainLoop()) {
+    while (waitForPress && aptMainLoop()) { // While the function is waiting for a button press, 
         gspWaitForVBlank();
-        hidScanInput();
+        hidScanInput();                     // it scans for input with hidScanInput();
         
         u32 kDown = keysDown(); 
         
         if (kDown & button) {            
-            waitForPress = false;
-            choice = true;
+            waitForPress = false;           // When the button is pressed, it stops listening for input and breaks the function
         }
     }
 }
@@ -181,7 +204,6 @@ void holdButton(u32 button, int duration) {
             wait(2000);
             if (kDown & button) {
                 waitForPress = false;
-                choice = true;
                 consoleClear();
                 switchScreen(1);
                 consoleClear();
@@ -209,15 +231,24 @@ void showChoice(std::string option1, std::string option2) {
         
         if (kDown & KEY_A) {
             waitForPress = false;
-            choice = true;
+            choice = 1;
             consoleClear();
+            std::cout << std::endl;
             break;
         }
         if (kDown & KEY_B) {
             waitForPress = false;
-            choice = false;
+            choice = 2;
             consoleClear();
+            std::cout << std::endl;
             break;
         }
     }
+}
+void describe(std::string text, double time, bool doEndl, std::string color) {
+    std::cout << "\033[3m";
+    text = "*" + text + "*";
+    para(1);
+    show(text, time, doEndl, color);
+    para(1);
 }

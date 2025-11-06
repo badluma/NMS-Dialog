@@ -9,6 +9,7 @@
 
 // Constants
 const std::string RESET = "\x1b[0m";
+const std::string GRAY = "\x1b[90m";
 const std::string RED = "\x1b[31m";
 const std::string GREEN = "\x1b[32m";
 const std::string YELLOW = "\x1b[33m";
@@ -22,6 +23,7 @@ const std::string ACC_COLOR = RED;
 bool waitForPress = false;
 int choice;
 PrintConsole topScreen, bottomScreen; // Screens to print on
+
 // Function identifiers
 void switchScreen(int screen);
 void wait(int timeToWait);
@@ -31,9 +33,9 @@ void clear(int screen);
 void para(int count);
 void button(u32 button);
 void holdButton(u32 button, int duration);
+void quitOnPress();
 void showChoice(std::string option1, std::string option2);
-void describe(std::string text, double time, bool doEndl, std::string color);
-
+void describe(std::string text, double time, bool doEndl);
 
 // Main Function
 int main(int argc, char* argv[])
@@ -42,12 +44,16 @@ int main(int argc, char* argv[])
     topScreen = *consoleInit(GFX_TOP, NULL); // Initialize top screen
     bottomScreen = *consoleInit(GFX_BOTTOM, NULL); // Initialize bottom screen
 
+    // // Used to let the user quit anytime by pressing Start, not yet working
+    // std::thread t1(quitOnPress);
+    // t1.join();
+    
     switchScreen(1); // Start on top screen
 
     // ---------- INITIALIZATION ----------
     wait(2000);
     para(12);
-    show("              BEGIN INTIALIZATION?               ", 2, true, RESET);
+    show("              BEGIN INTIALIZATION?", 2, true, RESET);
     para(1);
     switchScreen(2);
     para(12);
@@ -93,9 +99,9 @@ int main(int argc, char* argv[])
     show("...", 5, true, RESET);
     para(1);
     wait(1000);
-    show("I should look around. ", 1, true, RESET);
     show("I notice that my scanner is broken. I should", 1, true, RESET);
     show("repair it to learn more about my environment. ", 1, true, RESET);
+    show("Or I can just look around myself.", 1, true, RESET);
     showChoice("Repair scanner", "Investigate the area"); // Choose between the two options
     clear(0);
     if (choice == 1) {
@@ -107,11 +113,14 @@ int main(int argc, char* argv[])
         show("NON-OPERATIONAL", 1, true, ACC_COLOR);
         show("REQUIRED MATERIAL: ", 1, false, RESET);
         show("SODIUM", 1, true, ACC_COLOR);
+        para(1);
+        show("I should look for this material in the forest.", 1, false, RESET);
+        showChoice("Investigate the forest", "");
     }
     else if (choice == 2) {
         show("The scanner isn't too important right now.", 1, true, RESET);
         show("For now, I want to find out where I am.", 1, true, RESET);
-        describe("I'm slowly heading towards the forest", 1, true, RESET);
+        describe("I'm slowly heading towards the forest", 1, true);
     }
     wait(10000);
     gfxExit();
@@ -144,8 +153,7 @@ void show(std::string text, double time, bool doEndl, std::string color) {
         }
     }
     if (doEndl) {
-        std::cout << std::endl;
-        std::cout << " ";
+        std::cout << std::endl << " ";
     }
     wait(250);
 }
@@ -182,7 +190,7 @@ void button(u32 button) {
         hidScanInput();                     // it scans for input with hidScanInput();
         
         u32 kDown = keysDown(); 
-        
+
         if (kDown & button) {            
             waitForPress = false;           // When the button is pressed, it stops listening for input and breaks the function
         }
@@ -210,14 +218,22 @@ void holdButton(u32 button, int duration) {
         }
     }
 }
+void quitOnPress() {
+    while (aptMainLoop()) {
+        button(KEY_START);
+        break;
+    }
+}
 void showChoice(std::string option1, std::string option2) {
     switchScreen(2); // Switch to bottom screen
     para(14);
     show("(A) ", 1, false, ACC_COLOR);
     show(option1, 1, true, RESET);
     para(1);
-    show("(B) ", 1, false, ACC_COLOR);
-    show(option2, 1, true, RESET);
+    if (!(option2.empty())) {
+        show("(B) ", 1, false, ACC_COLOR);
+        show(option2, 1, true, RESET);
+    }
     waitForPress = true;
     while (waitForPress && aptMainLoop()) {
         gspWaitForVBlank();
@@ -232,7 +248,8 @@ void showChoice(std::string option1, std::string option2) {
             std::cout << std::endl;
             break;
         }
-        if (kDown & KEY_B) {
+        
+        if (kDown & KEY_B && !(option2.empty())) {
             waitForPress = false;
             choice = 2;
             consoleClear();
@@ -241,10 +258,9 @@ void showChoice(std::string option1, std::string option2) {
         }
     }
 }
-void describe(std::string text, double time, bool doEndl, std::string color) {
-    std::cout << "\033[3m";
+void describe(std::string text, double time, bool doEndl) {
     text = "*" + text + "*";
     para(1);
-    show(text, time, doEndl, color);
+    show(text, time, doEndl, GRAY);
     para(1);
 }

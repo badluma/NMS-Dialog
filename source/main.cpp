@@ -20,9 +20,9 @@ const std::string CYAN = "\x1b[36m";
 const std::string ACC_COLOR = RED;
 
 // Variables
-bool waitForPress = false; // Initializes the waitForPress variable and sets it to false 
-int choice; // Initializes the choice variable
-PrintConsole topScreen, bottomScreen; // Screens to print on
+bool waitForPress = false;              // Initializes the waitForPress variable and sets it to false 
+int choice;                             // Initializes the choice variable
+PrintConsole topScreen, bottomScreen;   // Screens to print on
 
 // Function identifiers
 void switchScreen(int screen);

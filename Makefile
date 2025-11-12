@@ -31,18 +31,18 @@ include $(DEVKITARM)/3ds_rules
 #     - icon.png
 #     - <libctru folder>/default_icon.png
 #---------------------------------------------------------------------------------
-TARGET		:=	$(notdir $(CURDIR))
-BUILD		:=	build
-SOURCES		:=	source
-DATA		:=	data
-INCLUDES	:=	include
-GRAPHICS	:=	gfx
-GFXBUILD	:=	$(BUILD)
-APP_TITLE	:=  NMS Dialog
-APP_DESCRIPTION := A simple dialog-based game inspired by No Man's Sky
-APP_AUTHOR	:= badluma
-#ROMFS		:=	romfs
-#GFXBUILD	:=	$(ROMFS)/gfx
+TARGET			:=	$(notdir $(CURDIR))
+BUILD			:=	build
+SOURCES			:=	source
+DATA			:=	data
+INCLUDES		:=	include
+GRAPHICS		:=	gfx
+GFXBUILD		:=	$(BUILD)
+APP_TITLE		:=  NMS Dialog
+APP_DESCRIPTION :=  A simple dialog-based game inspired by No Man's Sky
+APP_AUTHOR		:=  badluma
+#ROMFS			:=	romfs
+#GFXBUILD		:=	$(ROMFS)/gfx
 
 #--------------------------------------------------------------------------------
 # options for code generation
